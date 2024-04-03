@@ -31,9 +31,12 @@ class ConverterController extends Controller
      */
     public function convert(Request $request)
     {
-        // $input = '355'; // Test input
+        // $input = '100,000'; // Test input
         // $input = 'MMMMCCCLV'; // Test input
         $input = $request->input('input'); // Request input from the user
+
+        // Remove commas from the input
+        $input = str_replace(',', '', $input);
         
         // Check if the input is an integer or a Roman numeral
         if (is_numeric($input)) {
