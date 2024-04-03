@@ -31,7 +31,8 @@ class ConverterController extends Controller
      */
     public function convert(Request $request)
     {
-        $input = '355'; // Test input
+        // $input = '355'; // Test input
+        $input = 'MMMMCCCLV'; // Test input
         // $input = $request->input('input'); // Request input from the user
         
         // Check if the input is an integer or a Roman numeral
@@ -48,6 +49,12 @@ class ConverterController extends Controller
         return $this->convertRomanToInteger($input);
     }
 
+    /**
+     * Convert an integer to a Roman numeral.
+     *
+     * @param int $input
+     * @return string
+     */
     private function convertIntegerToRoman(int $input)
     {
         if ($input < 1 || $input > 100000) {
@@ -71,8 +78,32 @@ class ConverterController extends Controller
         return response()->json(['output' => $result]);
     }
 
+    /**
+     * Convert a Roman numeral to an integer.
+     *
+     * @param string $input
+     * @return string
+     */
     private function convertRomanToInteger(string $input)
     {
-        dd($input);
+        // Check if the input is a valid Roman numeral
+        if (!preg_match('/^(M{0,3})(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/', $input)) {
+            return response()->json(['error' => 'Invalid Roman numeral. Please enter a valid Roman numeral.'], 400);
+        }
+
+        $result = 0; // Initialise the result to 0
+
+        // Loop through the array of Roman numerals
+        foreach ($this->romanNumerals as $symbol => $value) {
+            // Repeat the Roman numeral while the input starts with the symbol
+            while (strpos($input, $symbol) === 0) {
+                $result += $value; // Add the value to the result
+                $input = substr($input, strlen($symbol)); // Remove the symbol from the input
+            }
+        }
+
+        // Return the result as a JSON response
+        return response()->json(['output' => $result]);
+
     }
 }
