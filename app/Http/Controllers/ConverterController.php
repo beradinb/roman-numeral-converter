@@ -32,8 +32,8 @@ class ConverterController extends Controller
     public function convert(Request $request)
     {
         // $input = '355'; // Test input
-        $input = 'MMMMCCCLV'; // Test input
-        // $input = $request->input('input'); // Request input from the user
+        // $input = 'MMMMCCCLV'; // Test input
+        $input = $request->input('input'); // Request input from the user
         
         // Check if the input is an integer or a Roman numeral
         if (is_numeric($input)) {

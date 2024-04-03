@@ -5,7 +5,7 @@ use App\Http\Controllers\ConverterController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('converter');
 });
 
 Route::post('/convert', [ConverterController::class, 'convert']);
