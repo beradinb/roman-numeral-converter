@@ -8,6 +8,14 @@ class ConverterController extends Controller
 {
     // Look up array of Roman numerals and their corresponding integer values
     protected $romanNumerals = [
+        'C̅' => 100000,
+        'X̅C̅' => 90000,
+        'L̅' => 50000,
+        'X̅L̅' => 40000,
+        'X̅' => 10000,
+        'ĪX̅' => 9000,
+        'V̅' => 5000,
+        'ĪV̅' => 4000,
         'M' => 1000,
         'CM' => 900,
         'D' => 500,
@@ -35,8 +43,8 @@ class ConverterController extends Controller
         // $input = 'MMMMCCCLV'; // Test input
         $input = $request->input('input'); // Request input from the user
 
-        // Remove commas from the input
-        $input = str_replace(',', '', $input);
+        // Remove one comma from the input
+        $input = preg_replace('/,/', '', $input, 1);
         
         // Check if the input is an integer or a Roman numeral
         if (is_numeric($input)) {
@@ -89,8 +97,10 @@ class ConverterController extends Controller
      */
     private function convertRomanToInteger(string $input)
     {
+        $uppercasedInput = strtoupper($input); // Convert the input to uppercase
+
         // Check if the input is a valid Roman numeral
-        if (!preg_match('/^(M{0,3})(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/', $input)) {
+        if (!preg_match('/^(M{0,3})(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/', $uppercasedInput)) {
             return response()->json(['error' => 'Invalid Roman numeral. Please enter a valid Roman numeral.'], 400);
         }
 
@@ -99,9 +109,9 @@ class ConverterController extends Controller
         // Loop through the array of Roman numerals
         foreach ($this->romanNumerals as $symbol => $value) {
             // Repeat the Roman numeral while the input starts with the symbol
-            while (strpos($input, $symbol) === 0) {
+            while (strpos($uppercasedInput, $symbol) === 0) {
                 $result += $value; // Add the value to the result
-                $input = substr($input, strlen($symbol)); // Remove the symbol from the input
+                $uppercasedInput = substr($uppercasedInput, strlen($symbol)); // Remove the symbol from the input
             }
         }
 
