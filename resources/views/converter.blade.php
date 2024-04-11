@@ -8,6 +8,11 @@
 
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
+        <style>
+            .overlined {
+              text-decoration: overline; /* Specify the overline style */
+            }
+          </style>
     </head>
     <body class="bg-gray-100 min-h-screen flex items-center justify-center">
 
@@ -39,8 +44,12 @@
                     return;
                 }
                 console.log(data);
-                document.getElementById('output').innerText = data.output;
+                var element = document.getElementById('output');
+                element.innerText = data.output; // Set the text content of the element
 
+                // Create a span element with the overlined class for the specified number of characters
+                var overlinedText = '<span class="overlined">' + data.output.substr(0, data.underscoreCount) + '</span>' + data.output.substr(data.underscoreCount);
+                element.innerHTML = overlinedText; 
             });
         </script>
     </body>

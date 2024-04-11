@@ -8,14 +8,14 @@ class ConverterController extends Controller
 {
     // Look up array of Roman numerals and their corresponding integer values
     protected $romanNumerals = [
-        'C̅' => 100000,
-        'X̅C̅' => 90000,
-        'L̅' => 50000,
-        'X̅L̅' => 40000,
-        'X̅' => 10000,
-        'ĪX̅' => 9000,
-        'V̅' => 5000,
-        'ĪV̅' => 4000,
+        // 'C̅' => 100000,
+        // 'X̅C̅' => 90000,
+        // 'L̅' => 50000,
+        // 'X̅L̅' => 40000,
+        // 'X̅' => 10000,
+        // 'ĪX̅' => 9000,
+        // 'V̅' => 5000,
+        // 'ĪV̅' => 4000,
         'M' => 1000,
         'CM' => 900,
         'D' => 500,
@@ -39,9 +39,9 @@ class ConverterController extends Controller
      */
     public function convert(Request $request)
     {
-        // $input = '100,000'; // Test input
-        // $input = 'MMMMCCCLV'; // Test input
-        $input = $request->input('input'); // Request input from the user
+        // $input = '99,999'; // Test input
+        $input = '_X_L'; // Test input
+        // $input = $request->input('input'); // Request input from the user
 
         // Remove one comma from the input
         $input = preg_replace('/,/', '', $input, 1);
@@ -75,18 +75,35 @@ class ConverterController extends Controller
 
         $result = '';
 
+        $thousandsPart = floor($input / 1000);
+        $remainder = $input % 1000;
+        // $input -= $thousandsPart;
+
+        $underscore_count = strlen($result);
+
         // Loop through the array of Roman numerals
         foreach ($this->romanNumerals as $symbol => $value) {
             // Repeat the Roman numeral while the input is greater than or equal to the value
-            while ($input >= $value) {
+            while ($thousandsPart >= $value) {
+                $result .= $symbol; // Append the Roman numeral to the result
+                $thousandsPart -= $value; // Subtract the value from the input
+            }
+        }
+
+        $underscore_count = strlen($result);
+
+        // Loop through the array of Roman numerals
+        foreach ($this->romanNumerals as $symbol => $value) {
+            // Repeat the Roman numeral while the input is greater than or equal to the value
+            while ($remainder >= $value) {
                 // echo "Roman: " .$symbol. " Input:". $input . ' ' . "Value:". $value .  PHP_EOL;
                 $result .= $symbol; // Append the Roman numeral to the result
-                $input -= $value; // Subtract the value from the input
+                $remainder -= $value; // Subtract the value from the input
             }
         }
 
         // Return the result as a JSON response
-        return response()->json(['output' => $result]);
+        return response()->json(['output' => $result, 'underscoreCount' => $underscore_count]);
     }
 
     /**
